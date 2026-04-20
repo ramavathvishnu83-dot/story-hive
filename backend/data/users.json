@@ -1,0 +1,72 @@
+[
+  {
+    "id": "user-1",
+    "name": "Alice Writer",
+    "role": "writer",
+    "followers": [],
+    "following": [],
+    "likesReceived": [],
+    "reviews": [
+      {
+        "from": "user-2",
+        "rating": 5,
+        "comment": "Amazing storyteller!"
+      }
+    ],
+    "dealHistory": []
+  },
+  {
+    "id": "user-2",
+    "name": "Bob Director",
+    "role": "director",
+    "followers": [
+      "09cf22b7-c9e4-4f67-a32b-1eee9e1cfa33"
+    ],
+    "following": [],
+    "likesReceived": [],
+    "reviews": [],
+    "dealHistory": []
+  },
+  {
+    "id": "64f29f39-97ce-4069-b1ac-fb565c52cb57",
+    "name": "pavan",
+    "role": "writer",
+    "followers": [],
+    "following": [],
+    "likesReceived": [],
+    "reviews": [],
+    "dealHistory": []
+  },
+  {
+    "id": "42cda0b1-1467-4b58-97bf-73328002dab8",
+    "name": "Anonymous Director",
+    "role": "director",
+    "followers": [],
+    "following": [],
+    "likesReceived": [],
+    "reviews": [],
+    "dealHistory": []
+  },
+  {
+    "id": "09cf22b7-c9e4-4f67-a32b-1eee9e1cfa33",
+    "name": "Anonymous Writer",
+    "role": "writer",
+    "followers": [],
+    "following": [
+      "user-2"
+    ],
+    "likesReceived": [],
+    "reviews": [],
+    "dealHistory": []
+  },
+  {
+    "id": "cb7cf058-eba9-4eb2-af42-23d53bca720c",
+    "name": "Anonymous Writer",
+    "role": "writer",
+    "followers": [],
+    "following": [],
+    "likesReceived": [],
+    "reviews": [],
+    "dealHistory": []
+  }
+]

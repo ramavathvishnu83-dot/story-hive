@@ -1,0 +1,36 @@
+[
+  {
+    "id": "story-1",
+    "title": "The Last Reel",
+    "summary": "A fading director discovers a mysterious film reel that changes reality.",
+    "genre": "Thriller",
+    "tags": [
+      "mystery",
+      "cinema",
+      "supernatural"
+    ],
+    "fullScript": "ACT 1: INT. OLD CINEMA - NIGHT\nDust motes float in the projector beam...",
+    "authorId": "user-1",
+    "authorName": "Alice Writer",
+    "status": "active",
+    "likes": [
+      "user-2"
+    ],
+    "createdAt": "2026-04-01T10:00:00Z"
+  },
+  {
+    "id": "1eb9a31c-f9ce-4b88-b4b8-0006ce290d25",
+    "title": "grerg",
+    "summary": "sdfghjk,fmwfefw",
+    "genre": "Drama",
+    "tags": [
+      "grrgtehgf"
+    ],
+    "fullScript": "fwhuiwfw",
+    "authorId": "64f29f39-97ce-4069-b1ac-fb565c52cb57",
+    "authorName": "pavan",
+    "status": "active",
+    "likes": [],
+    "createdAt": "2026-04-20T10:08:23.379Z"
+  }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "storyId": "1eb9a31c-f9ce-4b88-b4b8-0006ce290d25",
+    "participants": [
+      "42cda0b1-1467-4b58-97bf-73328002dab8"
+    ],
+    "messages": [
+      {
+        "id": "c3577785-2ecb-4b96-8e11-2884f8ec0930",
+        "senderId": "42cda0b1-1467-4b58-97bf-73328002dab8",
+        "senderName": "Anonymous Director",
+        "text": "hi",
+        "timestamp": "2026-04-20T10:08:43.613Z"
+      }
+    ]
+  }
+]
