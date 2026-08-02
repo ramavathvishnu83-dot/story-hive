@@ -1,182 +1,64 @@
 [
   {
-    "id": "user-1",
-    "name": "Alice Writer",
-    "role": "writer",
-    "followers": [],
-    "following": [],
-    "likesReceived": [],
-    "reviews": [
-      {
-        "from": "user-2",
-        "rating": 5,
-        "comment": "Amazing storyteller!"
-      }
-    ],
-    "dealHistory": []
-  },
-  {
-    "id": "user-2",
-    "name": "Bob Director",
-    "role": "director",
-    "followers": [
-      "09cf22b7-c9e4-4f67-a32b-1eee9e1cfa33"
-    ],
-    "following": [],
-    "likesReceived": [],
-    "reviews": [],
-    "dealHistory": []
-  },
-  {
-    "id": "64f29f39-97ce-4069-b1ac-fb565c52cb57",
-    "name": "pavan",
-    "role": "writer",
-    "followers": [],
-    "following": [],
-    "likesReceived": [],
-    "reviews": [],
-    "dealHistory": []
-  },
-  {
-    "id": "42cda0b1-1467-4b58-97bf-73328002dab8",
-    "name": "Anonymous Director",
-    "role": "director",
-    "followers": [],
-    "following": [],
-    "likesReceived": [],
-    "reviews": [],
-    "dealHistory": []
-  },
-  {
-    "id": "09cf22b7-c9e4-4f67-a32b-1eee9e1cfa33",
-    "name": "Anonymous Writer",
+    "id": "f624ac57-71e8-4a0f-8f4d-26df8c282185",
+    "name": "Ramavath VIshnu",
+    "email": "ramavathvishnu83@gmail.com",
+    "password": "Vishnu@9502",
     "role": "writer",
     "followers": [],
     "following": [
-      "user-2"
+      "6306b579-667a-4713-9f7a-3707fa5401f2"
     ],
     "likesReceived": [],
     "reviews": [],
-    "dealHistory": []
+    "dealHistory": [],
+    "createdAt": "2026-04-27T10:13:54.279Z"
   },
   {
-    "id": "cb7cf058-eba9-4eb2-af42-23d53bca720c",
-    "name": "Anonymous Writer",
-    "role": "writer",
-    "followers": [],
+    "id": "6306b579-667a-4713-9f7a-3707fa5401f2",
+    "name": "nikitha",
+    "email": "nikithabangari@gmail.com",
+    "password": "Nikitha@123",
+    "role": "director",
+    "followers": [
+      "f624ac57-71e8-4a0f-8f4d-26df8c282185"
+    ],
     "following": [],
-    "likesReceived": [],
+    "likesReceived": [
+      "f624ac57-71e8-4a0f-8f4d-26df8c282185"
+    ],
     "reviews": [],
-    "dealHistory": []
+    "dealHistory": [],
+    "createdAt": "2026-04-27T10:16:16.580Z"
   },
   {
-    "id": "53f81a87-bab5-4fc3-a23c-b7a78c2147bf",
-    "name": "Anonymous Writer",
-    "role": "writer",
-    "followers": [],
-    "following": [],
-    "likesReceived": [],
-    "reviews": [],
-    "dealHistory": []
-  },
-  {
-    "id": "ea37461d-129b-4a16-9b31-c485404dd1bb",
-    "name": "Anonymous Director",
+    "id": "c7752c22-f2ec-47bd-afb5-e6562a6a4a17",
+    "name": "Ramavath",
+    "email": "25r21a66h8@mlrit.ac.in",
+    "password": "MLRIT@2025",
     "role": "director",
     "followers": [],
     "following": [],
-    "likesReceived": [],
+    "likesReceived": [
+      "f624ac57-71e8-4a0f-8f4d-26df8c282185"
+    ],
     "reviews": [],
-    "dealHistory": []
+    "dealHistory": [],
+    "createdAt": "2026-04-27T13:50:24.804Z"
   },
   {
-    "id": "e3cf81b2-02bd-49fc-b07c-3c37cba6af57",
-    "name": "Anonymous Writer",
+    "id": "72ff1b96-7ef4-40ca-bb60-04e5520478a3",
+    "name": "pavan",
+    "email": "24r21a05gw@mlrit.ac.in",
+    "password": "pavanisgoodboy",
     "role": "writer",
     "followers": [],
     "following": [],
-    "likesReceived": [],
+    "likesReceived": [
+      "f624ac57-71e8-4a0f-8f4d-26df8c282185"
+    ],
     "reviews": [],
-    "dealHistory": []
-  },
-  {
-    "id": "241eec7a-9a86-4964-a60a-d6a35e88b820",
-    "name": "Anonymous Director",
-    "role": "director",
-    "followers": [],
-    "following": [],
-    "likesReceived": [],
-    "reviews": [],
-    "dealHistory": []
-  },
-  {
-    "id": "2bf26de6-4db9-4bcd-94f8-86ccd5abcab5",
-    "name": "Anonymous Writer",
-    "role": "writer",
-    "followers": [],
-    "following": [],
-    "likesReceived": [],
-    "reviews": [],
-    "dealHistory": []
-  },
-  {
-    "id": "ba043774-0976-41a9-8780-4af8ae286d0b",
-    "name": "Anonymous Director",
-    "role": "director",
-    "followers": [],
-    "following": [],
-    "likesReceived": [],
-    "reviews": [],
-    "dealHistory": []
-  },
-  {
-    "id": "885f3a7c-dbd8-4b72-a3dc-d1d53fd99c94",
-    "name": "Anonymous Writer",
-    "role": "writer",
-    "followers": [],
-    "following": [],
-    "likesReceived": [],
-    "reviews": [],
-    "dealHistory": []
-  },
-  {
-    "id": "fa708d0d-f106-4948-a7bf-ea15e2fa4409",
-    "name": "Anonymous Director",
-    "role": "director",
-    "followers": [],
-    "following": [],
-    "likesReceived": [],
-    "reviews": [],
-    "dealHistory": []
-  },
-  {
-    "id": "bd838c4d-1c5b-4311-92ec-293319cfd2a2",
-    "name": "Anonymous Director",
-    "role": "director",
-    "followers": [],
-    "following": [],
-    "likesReceived": [],
-    "reviews": [],
-    "dealHistory": []
-  },
-  {
-    "id": "a5ec70af-24f2-4852-bcf8-90ad23b903ae",
-    "name": "Anonymous Writer",
-    "role": "writer",
-    "followers": [],
-    "following": [],
-    "likesReceived": [],
-    "reviews": [],
-    "dealHistory": []
-  },
-  {
-    "id": "8785eaf4-e8d7-405e-ad0b-e40ad61ffb12",
-    "name": "Anonymous Director",
-    "role": "director",
-    "followers": [],
-    "following": [],
-    "likesReceived": [],
-    "reviews": [],
-    "dealHistory": []
+    "dealHistory": [],
+    "createdAt": "2026-04-28T08:26:43.371Z"
   }
 ]

@@ -1,0 +1,294 @@
+[
+  {
+    "id": "f2142ea8-2339-4c95-a2f9-5f78b7642abd",
+    "threadKey": "c7752c22-f2ec-47bd-afb5-e6562a6a4a17_f624ac57-71e8-4a0f-8f4d-26df8c282185",
+    "participants": [
+      "f624ac57-71e8-4a0f-8f4d-26df8c282185",
+      "c7752c22-f2ec-47bd-afb5-e6562a6a4a17"
+    ],
+    "participantNames": {
+      "f624ac57-71e8-4a0f-8f4d-26df8c282185": "Ramavath VIshnu",
+      "c7752c22-f2ec-47bd-afb5-e6562a6a4a17": "Ramavath"
+    },
+    "messages": [
+      {
+        "id": "91b607bd-c88f-4185-998f-a100b3305116",
+        "senderId": "system",
+        "senderName": "Story Hive",
+        "text": "Deal started for story \"the world\". Both parties must confirm to complete.",
+        "type": "system",
+        "dealId": "4c87a110-80cd-497b-88a6-51bedfaf1a86",
+        "timestamp": "2026-04-29T06:28:27.220Z",
+        "readBy": [
+          "c7752c22-f2ec-47bd-afb5-e6562a6a4a17",
+          "f624ac57-71e8-4a0f-8f4d-26df8c282185"
+        ]
+      },
+      {
+        "id": "28a2470d-b429-46fa-8185-30f8eec116ac",
+        "senderId": "c7752c22-f2ec-47bd-afb5-e6562a6a4a17",
+        "senderName": "Ramavath",
+        "receiverId": "f624ac57-71e8-4a0f-8f4d-26df8c282185",
+        "text": "hi",
+        "replyTo": null,
+        "edited": false,
+        "deleted": false,
+        "readBy": [
+          "c7752c22-f2ec-47bd-afb5-e6562a6a4a17",
+          "f624ac57-71e8-4a0f-8f4d-26df8c282185"
+        ],
+        "timestamp": "2026-04-29T06:28:43.357Z"
+      },
+      {
+        "id": "25dee129-9fe9-4030-b680-a2bbc24d9762",
+        "senderId": "system",
+        "senderName": "Story Hive",
+        "text": "🎉 Deal Completed — \"the world\" has been sold!",
+        "type": "system",
+        "dealId": "4c87a110-80cd-497b-88a6-51bedfaf1a86",
+        "timestamp": "2026-04-30T05:12:23.802Z",
+        "readBy": [
+          "f624ac57-71e8-4a0f-8f4d-26df8c282185",
+          "c7752c22-f2ec-47bd-afb5-e6562a6a4a17"
+        ]
+      },
+      {
+        "id": "e3619e3a-e623-438d-a045-d5849424e785",
+        "senderId": "system",
+        "senderName": "Story Hive",
+        "text": "Deal started for story \"kjsljad\". Both parties must confirm to complete.",
+        "type": "system",
+        "dealId": "1eae45cc-79d6-4b6e-bb22-9ed87f2f3d6b",
+        "timestamp": "2026-04-30T05:22:47.673Z",
+        "readBy": [
+          "c7752c22-f2ec-47bd-afb5-e6562a6a4a17",
+          "f624ac57-71e8-4a0f-8f4d-26df8c282185"
+        ]
+      },
+      {
+        "id": "8b9f6dde-6b85-4bce-9a9b-f4ce0820a67c",
+        "senderId": "system",
+        "senderName": "Story Hive",
+        "text": "Deal for \"kjsljad\" was cancelled by the Writer.",
+        "type": "system",
+        "dealId": "1eae45cc-79d6-4b6e-bb22-9ed87f2f3d6b",
+        "timestamp": "2026-04-30T05:58:47.593Z",
+        "readBy": [
+          "f624ac57-71e8-4a0f-8f4d-26df8c282185",
+          "c7752c22-f2ec-47bd-afb5-e6562a6a4a17"
+        ]
+      },
+      {
+        "id": "ba281734-c290-46c4-8729-0efb3256a2b6",
+        "senderId": "system",
+        "senderName": "Story Hive",
+        "text": "Deal started for story \"The Wrong Delivery\". Both parties must confirm to complete.",
+        "type": "system",
+        "dealId": "a90eb40c-f48d-4a85-9453-5a42931d5067",
+        "timestamp": "2026-04-30T08:24:09.537Z",
+        "readBy": [
+          "c7752c22-f2ec-47bd-afb5-e6562a6a4a17",
+          "f624ac57-71e8-4a0f-8f4d-26df8c282185"
+        ]
+      },
+      {
+        "id": "4e47acb0-d9c2-41d3-9352-d79dffc792dc",
+        "senderId": "f624ac57-71e8-4a0f-8f4d-26df8c282185",
+        "senderName": "Ramavath VIshnu",
+        "receiverId": "c7752c22-f2ec-47bd-afb5-e6562a6a4a17",
+        "text": "i have a demand about 1.5 lakhs for deal confirmation",
+        "replyTo": null,
+        "edited": false,
+        "deleted": false,
+        "readBy": [
+          "f624ac57-71e8-4a0f-8f4d-26df8c282185",
+          "c7752c22-f2ec-47bd-afb5-e6562a6a4a17"
+        ],
+        "timestamp": "2026-04-30T08:27:22.268Z"
+      },
+      {
+        "id": "347b767e-9e0b-4331-9070-88d3981695bd",
+        "senderId": "system",
+        "senderName": "Story Hive",
+        "text": "🎉 Deal Completed — \"The Wrong Delivery\" has been sold!",
+        "type": "system",
+        "dealId": "a90eb40c-f48d-4a85-9453-5a42931d5067",
+        "timestamp": "2026-05-07T14:34:52.425Z",
+        "readBy": [
+          "f624ac57-71e8-4a0f-8f4d-26df8c282185",
+          "c7752c22-f2ec-47bd-afb5-e6562a6a4a17"
+        ]
+      },
+      {
+        "id": "a3b466a1-3a1c-4d79-bef2-063be61cfe8c",
+        "senderId": "system",
+        "senderName": "Story Hive",
+        "text": "🎉 Deal Completed — \"The Wrong Delivery\" has been sold!",
+        "type": "system",
+        "dealId": "a90eb40c-f48d-4a85-9453-5a42931d5067",
+        "timestamp": "2026-05-07T14:34:56.781Z",
+        "readBy": [
+          "f624ac57-71e8-4a0f-8f4d-26df8c282185",
+          "c7752c22-f2ec-47bd-afb5-e6562a6a4a17"
+        ]
+      },
+      {
+        "id": "2ed89b01-3910-4bc7-b373-941af8ac26fa",
+        "senderId": "system",
+        "senderName": "Story Hive",
+        "text": "🎉 Deal Completed — \"The Wrong Delivery\" has been sold!",
+        "type": "system",
+        "dealId": "a90eb40c-f48d-4a85-9453-5a42931d5067",
+        "timestamp": "2026-05-07T14:34:59.858Z",
+        "readBy": [
+          "f624ac57-71e8-4a0f-8f4d-26df8c282185",
+          "c7752c22-f2ec-47bd-afb5-e6562a6a4a17"
+        ]
+      },
+      {
+        "id": "25be3b36-dcd5-4d5a-a1af-0166c950972d",
+        "senderId": "system",
+        "senderName": "Story Hive",
+        "text": "🎉 Deal Completed — \"The Wrong Delivery\" has been sold!",
+        "type": "system",
+        "dealId": "a90eb40c-f48d-4a85-9453-5a42931d5067",
+        "timestamp": "2026-05-07T14:35:05.780Z",
+        "readBy": [
+          "f624ac57-71e8-4a0f-8f4d-26df8c282185",
+          "c7752c22-f2ec-47bd-afb5-e6562a6a4a17"
+        ]
+      },
+      {
+        "id": "17b1ffc0-b6c8-471d-b0f6-a04e0d1f3101",
+        "senderId": "system",
+        "senderName": "Story Hive",
+        "text": "🎉 Deal Completed — \"The Wrong Delivery\" has been sold!",
+        "type": "system",
+        "dealId": "a90eb40c-f48d-4a85-9453-5a42931d5067",
+        "timestamp": "2026-05-07T14:35:10.944Z",
+        "readBy": [
+          "f624ac57-71e8-4a0f-8f4d-26df8c282185",
+          "c7752c22-f2ec-47bd-afb5-e6562a6a4a17"
+        ]
+      },
+      {
+        "id": "34718763-89ad-427d-bf6c-aec9d73cb23a",
+        "senderId": "system",
+        "senderName": "Story Hive",
+        "text": "🎉 Deal Completed — \"The Wrong Delivery\" has been sold!",
+        "type": "system",
+        "dealId": "a90eb40c-f48d-4a85-9453-5a42931d5067",
+        "timestamp": "2026-05-07T14:35:12.688Z",
+        "readBy": [
+          "f624ac57-71e8-4a0f-8f4d-26df8c282185",
+          "c7752c22-f2ec-47bd-afb5-e6562a6a4a17"
+        ]
+      },
+      {
+        "id": "44e06a6f-fabc-47a5-9887-08af834ed664",
+        "senderId": "system",
+        "senderName": "Story Hive",
+        "text": "🎉 Deal Completed — \"The Wrong Delivery\" has been sold!",
+        "type": "system",
+        "dealId": "a90eb40c-f48d-4a85-9453-5a42931d5067",
+        "timestamp": "2026-05-07T14:35:17.894Z",
+        "readBy": [
+          "f624ac57-71e8-4a0f-8f4d-26df8c282185",
+          "c7752c22-f2ec-47bd-afb5-e6562a6a4a17"
+        ]
+      },
+      {
+        "id": "130d90b8-d687-41b3-a8e0-3ea484c0fc1a",
+        "senderId": "system",
+        "senderName": "Story Hive",
+        "text": "Deal started for story \"Last Bench Legend\". Both parties must confirm to complete.",
+        "type": "system",
+        "dealId": "d044bfe0-b7e9-486b-bd2d-dda6ba059c66",
+        "timestamp": "2026-05-15T14:23:51.957Z",
+        "readBy": [
+          "c7752c22-f2ec-47bd-afb5-e6562a6a4a17",
+          "f624ac57-71e8-4a0f-8f4d-26df8c282185"
+        ]
+      },
+      {
+        "id": "d422b65e-abc7-4533-80cf-ce426785102a",
+        "senderId": "system",
+        "senderName": "Story Hive",
+        "text": "🎉 Deal Completed — \"Last Bench Legend\" has been sold!",
+        "type": "system",
+        "dealId": "d044bfe0-b7e9-486b-bd2d-dda6ba059c66",
+        "timestamp": "2026-05-15T14:26:45.095Z",
+        "readBy": [
+          "f624ac57-71e8-4a0f-8f4d-26df8c282185",
+          "c7752c22-f2ec-47bd-afb5-e6562a6a4a17"
+        ]
+      },
+      {
+        "id": "b95d3fe8-ddd7-45fd-b5e0-c859a3e3285f",
+        "senderId": "system",
+        "senderName": "Story Hive",
+        "text": "Deal started for story \"Room No. 404\". Both parties must confirm to complete.",
+        "type": "system",
+        "dealId": "e73e395e-a346-4a82-90a2-d6d4d4ebd909",
+        "timestamp": "2026-07-17T12:14:21.960Z",
+        "readBy": [
+          "c7752c22-f2ec-47bd-afb5-e6562a6a4a17",
+          "f624ac57-71e8-4a0f-8f4d-26df8c282185"
+        ]
+      },
+      {
+        "id": "402efc07-d0fb-4de1-8866-a8434207affa",
+        "senderId": "c7752c22-f2ec-47bd-afb5-e6562a6a4a17",
+        "senderName": "Ramavath",
+        "receiverId": "f624ac57-71e8-4a0f-8f4d-26df8c282185",
+        "text": "hi",
+        "replyTo": null,
+        "edited": false,
+        "deleted": false,
+        "readBy": [
+          "c7752c22-f2ec-47bd-afb5-e6562a6a4a17",
+          "f624ac57-71e8-4a0f-8f4d-26df8c282185"
+        ],
+        "timestamp": "2026-07-17T12:15:32.838Z"
+      },
+      {
+        "id": "76eca8eb-a9be-4a7e-be5d-78107dda69a1",
+        "senderId": "c7752c22-f2ec-47bd-afb5-e6562a6a4a17",
+        "senderName": "Ramavath",
+        "receiverId": "f624ac57-71e8-4a0f-8f4d-26df8c282185",
+        "text": "i like your",
+        "replyTo": null,
+        "edited": false,
+        "deleted": false,
+        "readBy": [
+          "c7752c22-f2ec-47bd-afb5-e6562a6a4a17",
+          "f624ac57-71e8-4a0f-8f4d-26df8c282185"
+        ],
+        "timestamp": "2026-07-17T12:15:39.125Z"
+      },
+      {
+        "id": "06545658-277c-4eff-a2b4-bbd38695aee0",
+        "senderId": "system",
+        "senderName": "Story Hive",
+        "text": "🎉 Deal Completed — \"Room No. 404\" has been sold!",
+        "type": "system",
+        "dealId": "e73e395e-a346-4a82-90a2-d6d4d4ebd909",
+        "timestamp": "2026-07-17T12:16:54.784Z",
+        "readBy": [
+          "f624ac57-71e8-4a0f-8f4d-26df8c282185",
+          "c7752c22-f2ec-47bd-afb5-e6562a6a4a17"
+        ]
+      }
+    ],
+    "relatedDeals": [
+      "4c87a110-80cd-497b-88a6-51bedfaf1a86",
+      "1eae45cc-79d6-4b6e-bb22-9ed87f2f3d6b",
+      "a90eb40c-f48d-4a85-9453-5a42931d5067",
+      "d044bfe0-b7e9-486b-bd2d-dda6ba059c66",
+      "e73e395e-a346-4a82-90a2-d6d4d4ebd909"
+    ],
+    "createdAt": "2026-04-29T06:28:27.205Z",
+    "updatedAt": "2026-07-17T12:16:54.784Z",
+    "participantImages": {}
+  }
+]

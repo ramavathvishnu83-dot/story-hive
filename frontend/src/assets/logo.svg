@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <!-- Base gold gradient -->
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#c8a84b"/>
+      <stop offset="30%"  stop-color="#f5e090"/>
+      <stop offset="55%"  stop-color="#e8c060"/>
+      <stop offset="80%"  stop-color="#b8902a"/>
+      <stop offset="100%" stop-color="#d4a830"/>
+    </linearGradient>
+
+    <!-- Horizontal gold gradient for bottom lines -->
+    <linearGradient id="goldH" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#c8a84b"/>
+      <stop offset="40%"  stop-color="#f5e090"/>
+      <stop offset="70%"  stop-color="#e0b840"/>
+      <stop offset="100%" stop-color="#a07820"/>
+    </linearGradient>
+
+    <!-- Shine sweep gradient — bright white band that travels left→right -->
+    <linearGradient id="shine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="rgba(255,255,255,0)"/>
+      <stop offset="45%"  stop-color="rgba(255,255,255,0)"/>
+      <stop offset="50%"  stop-color="rgba(255,255,255,0.55)"/>
+      <stop offset="55%"  stop-color="rgba(255,255,255,0)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+      <animateTransform
+        attributeName="gradientTransform"
+        type="translate"
+        from="-1 0"
+        to="2 0"
+        dur="2.8s"
+        repeatCount="indefinite"/>
+    </linearGradient>
+
+    <!-- Glow pulse filter -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Clip path for shine overlay — covers the whole SVG -->
+    <clipPath id="logoClip">
+      <rect x="0" y="0" width="400" height="400"/>
+    </clipPath>
+  </defs>
+
+  <!-- ── Triangle (nested lines) ── -->
+  <g filter="url(#glow)">
+    <polyline points="200,42 358,298 42,298"   fill="none" stroke="url(#gold)" stroke-width="3.5" stroke-linejoin="round"/>
+    <polyline points="200,62 340,286 60,286"   fill="none" stroke="url(#gold)" stroke-width="3"   stroke-linejoin="round"/>
+    <polyline points="200,82 322,274 78,274"   fill="none" stroke="url(#gold)" stroke-width="2.5" stroke-linejoin="round"/>
+    <polyline points="200,102 304,262 96,262"  fill="none" stroke="url(#gold)" stroke-width="2"   stroke-linejoin="round"/>
+    <polyline points="200,122 286,250 114,250" fill="none" stroke="url(#gold)" stroke-width="2"   stroke-linejoin="round"/>
+  </g>
+
+  <!-- ── STORY HIVE text ── -->
+  <text x="200" y="330"
+    font-family="'Poppins', 'Georgia', serif"
+    font-size="32"
+    font-weight="700"
+    letter-spacing="8"
+    text-anchor="middle"
+    fill="url(#gold)"
+    filter="url(#glow)">STORY HIVE</text>
+
+  <!-- ── Bottom horizontal speed lines ── -->
+  <g filter="url(#glow)">
+    <line x1="60"  y1="350" x2="230" y2="350" stroke="url(#goldH)" stroke-width="3.5"/>
+    <line x1="68"  y1="360" x2="230" y2="360" stroke="url(#goldH)" stroke-width="2.8"/>
+    <line x1="76"  y1="370" x2="230" y2="370" stroke="url(#goldH)" stroke-width="2.2"/>
+    <line x1="84"  y1="380" x2="230" y2="380" stroke="url(#goldH)" stroke-width="1.8"/>
+    <line x1="240" y1="350" x2="310" y2="350" stroke="url(#goldH)" stroke-width="3.5"/>
+    <line x1="248" y1="360" x2="320" y2="360" stroke="url(#goldH)" stroke-width="2.8"/>
+    <line x1="256" y1="370" x2="330" y2="370" stroke="url(#goldH)" stroke-width="2.2"/>
+    <line x1="264" y1="380" x2="340" y2="380" stroke="url(#goldH)" stroke-width="1.8"/>
+  </g>
+
+  <!-- ── Shine sweep overlay ── -->
+  <rect x="0" y="0" width="400" height="400"
+    fill="url(#shine)"
+    clip-path="url(#logoClip)"
+    opacity="0.7"/>
+</svg>

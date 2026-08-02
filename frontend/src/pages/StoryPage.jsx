@@ -1,47 +1,237 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { getStory, getChat, sendMessage, getDeals, confirmDeal, cancelDeal, toggleStoryLike } from '../api';
+import { useLang } from '../context/LangContext';
+import {
+  getStory, getChat, sendMessage, getDeals, confirmDeal, cancelDeal,
+  toggleStoryLike, getDMThread, sendDM, getUser,
+  editChatMessage, deleteChatMessage, editDMMessage, deleteDMMessage,
+} from '../api';
+import ChatBox from '../components/ChatBox';
+import StoryTranslator from '../components/StoryTranslator';
+import ReportButton from '../components/ReportButton';
+
+function DealStatusBar({ deal, isWriter, onConfirm, onCancel, t }) {
+  const statusConfig = {
+    pending:   { color: 'var(--accent)',   bg: 'rgba(79,156,249,0.08)',   border: 'rgba(79,156,249,0.2)',   labelKey: 'deal.pending' },
+    completed: { color: 'var(--success)',  bg: 'rgba(52,211,153,0.08)',   border: 'rgba(52,211,153,0.2)',   labelKey: 'deal.completed' },
+    cancelled: { color: 'var(--danger)',   bg: 'rgba(248,113,113,0.08)',  border: 'rgba(248,113,113,0.2)',  labelKey: 'deal.cancelled' },
+  };
+  const cfg = statusConfig[deal.status] || statusConfig.pending;
+
+  const myConfirmed = isWriter ? deal.writerConfirmed : deal.directorConfirmed;
+  const otherConfirmed = isWriter ? deal.directorConfirmed : deal.writerConfirmed;
+
+  return (
+    <div style={{
+      padding: '16px 20px', borderRadius: 'var(--radius)',
+      background: cfg.bg, border: `1px solid ${cfg.border}`,
+      marginBottom: 16,
+    }}>
+      {/* Status row */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ width: 8, height: 8, borderRadius: '50%', background: cfg.color, display: 'inline-block' }} />
+          <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: cfg.color }}>
+            {t('deal.deal')} {t(cfg.labelKey)}
+          </span>
+        </div>
+        <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+          {new Date(deal.createdAt).toLocaleDateString()}
+        </span>
+      </div>
+
+      {/* Confirmation progress */}
+      <div style={{ display: 'flex', gap: 8, marginBottom: deal.status === 'pending' ? 14 : 0 }}>
+        {[
+          { label: t('deal.writerLabel'), confirmed: deal.writerConfirmed },
+          { label: t('deal.directorLabel'), confirmed: deal.directorConfirmed },
+        ].map(p => (
+          <div key={p.label} style={{
+            flex: 1, padding: '8px 12px', borderRadius: 'var(--radius-sm)',
+            background: p.confirmed ? 'rgba(52,211,153,0.1)' : 'rgba(255,255,255,0.03)',
+            border: `1px solid ${p.confirmed ? 'rgba(52,211,153,0.25)' : 'var(--glass-border)'}`,
+            display: 'flex', alignItems: 'center', gap: 8, fontSize: 12,
+          }}>
+            <span style={{ color: p.confirmed ? 'var(--success)' : 'var(--text-muted)', fontSize: 14 }}>
+              {p.confirmed ? '✓' : '○'}
+            </span>
+            <span style={{ color: p.confirmed ? 'var(--success)' : 'var(--text-secondary)' }}>
+              {p.label}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {/* Actions */}
+      {deal.status === 'pending' && (
+        <div style={{ display: 'flex', gap: 10 }}>
+          {!myConfirmed && (
+            <button className="btn btn-success btn-sm" style={{ flex: 1 }} onClick={onConfirm}>
+              ✓ {t('deal.confirmDeal')}
+            </button>
+          )}
+          {myConfirmed && !otherConfirmed && (
+            <div style={{ flex: 1, fontSize: 12, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span>⏳</span> {t('deal.waitingOther')}
+            </div>
+          )}
+          <button className="btn btn-danger btn-sm" onClick={onCancel}>
+            ✕ {t('common.cancel')}
+          </button>
+        </div>
+      )}
+
+      {deal.status === 'completed' && (
+        <div style={{ textAlign: 'center', fontSize: 13, color: 'var(--success)', fontWeight: 600, paddingTop: 4 }}>
+          {t('deal.storySold')}
+        </div>
+      )}
+      {deal.status === 'cancelled' && (
+        <div style={{ textAlign: 'center', fontSize: 13, color: 'var(--danger)', paddingTop: 4 }}>
+          {t('deal.dealWasCancelled')}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function StoryPage() {
   const { id } = useParams();
-  const { user, showToast } = useApp();
+  const { user, showToast, refreshUnread } = useApp();
+  const { t } = useLang();
   const navigate = useNavigate();
+
   const [story, setStory] = useState(null);
-  const [chat, setChat] = useState({ messages: [] });
   const [deals, setDeals] = useState([]);
-  const [msg, setMsg] = useState('');
   const [loading, setLoading] = useState(true);
-  const [calling, setCalling] = useState(false);
   const [likedStory, setLikedStory] = useState(false);
-  const messagesEndRef = useRef(null);
+  const [likePop, setLikePop] = useState(false);
 
-  useEffect(() => {
-    if (!user) return;
-    Promise.all([
-      getStory(id, user.id),
-      getChat(id),
-      getDeals(user.id),
-    ]).then(([s, c, d]) => {
-      setStory(s.data);
-      setChat(c.data);
-      setDeals(d.data.filter(deal => deal.storyId === id));
-      setLikedStory((s.data.likes || []).includes(user.id));
-    }).catch(() => showToast('Failed to load story', 'error'))
-      .finally(() => setLoading(false));
-  }, [id, user]);
+  // Story chat (public per-story)
+  const [storyChat, setStoryChat] = useState({ messages: [] });
+  const storyChatEndRef = useRef(null);
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [chat.messages]);
+  // DM thread (private writer ↔ director)
+  const [dmThread, setDmThread] = useState(null);
+  const [otherUser, setOtherUser] = useState(null);
+  const dmEndRef = useRef(null);
 
-  const handleSend = async () => {
-    if (!msg.trim()) return;
+  const [calling, setCalling] = useState(false);
+
+  useEffect(() => { if (!user) return; loadAll(); }, [id, user]);
+
+  const loadAll = async () => {
     try {
-      const res = await sendMessage({ storyId: id, senderId: user.id, senderName: user.name, text: msg });
-      setChat(prev => ({ ...prev, messages: [...prev.messages, res.data] }));
-      setMsg('');
-    } catch { showToast('Failed to send message', 'error'); }
+      const [s, c, d] = await Promise.all([
+        getStory(id, user.id),
+        getChat(id),
+        getDeals(user.id),
+      ]);
+      setStory(s.data);
+      setStoryChat(c.data);
+      const storyDeals = d.data.filter(deal => deal.storyId === id);
+      setDeals(storyDeals);
+      setLikedStory((s.data.likes || []).includes(user.id));
+
+      // Load DM thread if there's a deal
+      if (storyDeals.length > 0) {
+        const deal = storyDeals[0];
+        const otherId = user.id === deal.writerId ? deal.directorId : deal.writerId;
+        try {
+          const dmRes = await getDMThread(user.id, otherId);
+          if (dmRes.data) {
+            setDmThread(dmRes.data);
+            refreshUnread();
+          }
+          const otherRes = await getUser(otherId);
+          setOtherUser(otherRes.data);
+        } catch { /* no DM thread yet */ }
+      }
+    } catch {
+      showToast('Failed to load story', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleStorySend = async (text, replyTo) => {
+    try {
+      const res = await sendMessage({
+        storyId: id, senderId: user.id, senderName: user.name,
+        text, replyTo,
+      });
+      setStoryChat(prev => ({ ...prev, messages: [...prev.messages, res.data] }));
+    } catch (err) {
+      showToast(err.response?.data?.error || 'Failed to send message', 'error');
+    }
+  };
+
+  const handleStoryEditMsg = async (msgId, newText) => {
+    try {
+      const res = await editChatMessage(id, msgId, user.id, newText);
+      setStoryChat(prev => ({
+        ...prev,
+        messages: prev.messages.map(m => m.id === msgId ? res.data : m),
+      }));
+    } catch (err) {
+      showToast(err.response?.data?.error || 'Failed to edit message', 'error');
+    }
+  };
+
+  const handleStoryDeleteMsg = async (msgId) => {
+    try {
+      const res = await deleteChatMessage(id, msgId, user.id);
+      setStoryChat(prev => ({
+        ...prev,
+        messages: prev.messages.map(m => m.id === msgId ? res.data : m),
+      }));
+    } catch (err) {
+      showToast(err.response?.data?.error || 'Failed to delete message', 'error');
+    }
+  };
+
+  const handleDmSend = async (text, replyTo) => {
+    if (!deals[0]) return;
+    const deal = deals[0];
+    const otherId = user.id === deal.writerId ? deal.directorId : deal.writerId;
+    try {
+      const res = await sendDM({
+        senderId: user.id, senderName: user.name,
+        receiverId: otherId, receiverName: otherUser?.name || 'User',
+        text, replyTo,
+      });
+      setDmThread(prev => ({
+        ...prev,
+        messages: [...(prev?.messages || []), res.data.message],
+      }));
+    } catch (err) {
+      showToast(err.response?.data?.error || 'Failed to send message', 'error');
+    }
+  };
+
+  const handleDmEditMsg = async (msgId, newText) => {
+    try {
+      const res = await editDMMessage(msgId, user.id, newText);
+      setDmThread(prev => ({
+        ...prev,
+        messages: prev.messages.map(m => m.id === msgId ? res.data : m),
+      }));
+    } catch (err) {
+      showToast(err.response?.data?.error || 'Failed to edit message', 'error');
+    }
+  };
+
+  const handleDmDeleteMsg = async (msgId) => {
+    try {
+      const res = await deleteDMMessage(msgId, user.id);
+      setDmThread(prev => ({
+        ...prev,
+        messages: prev.messages.map(m => m.id === msgId ? res.data : m),
+      }));
+    } catch (err) {
+      showToast(err.response?.data?.error || 'Failed to delete message', 'error');
+    }
   };
 
   const handleConfirm = async (deal) => {
@@ -52,6 +242,11 @@ export default function StoryPage() {
         showToast('🎉 Deal Completed — Story Sold!');
         const s = await getStory(id, user.id);
         setStory(s.data);
+        // Reload DM thread to get system message
+        const deal2 = res.data;
+        const otherId = user.id === deal2.writerId ? deal2.directorId : deal2.writerId;
+        const dmRes = await getDMThread(user.id, otherId);
+        if (dmRes.data) setDmThread(dmRes.data);
       } else {
         showToast('Confirmation recorded. Waiting for other party.');
       }
@@ -63,30 +258,36 @@ export default function StoryPage() {
       const res = await cancelDeal({ dealId: deal.id, userId: user.id });
       setDeals(prev => prev.map(d => d.id === deal.id ? res.data : d));
       showToast('Deal Cancelled');
+      // Reload DM thread
+      const otherId = user.id === res.data.writerId ? res.data.directorId : res.data.writerId;
+      const dmRes = await getDMThread(user.id, otherId);
+      if (dmRes.data) setDmThread(dmRes.data);
     } catch { showToast('Failed to cancel deal', 'error'); }
-  };
-
-  const handleCall = () => {
-    setCalling(true);
-    showToast('📞 Calling... (UI demo only)', 'info');
-    setTimeout(() => setCalling(false), 3000);
   };
 
   const handleLikeStory = async () => {
     try {
       const res = await toggleStoryLike(user.id, id);
       setLikedStory(res.data.liked);
+      setLikePop(true);
+      setTimeout(() => setLikePop(false), 400);
       setStory(prev => ({
         ...prev,
         likes: res.data.liked
           ? [...(prev.likes || []), user.id]
-          : (prev.likes || []).filter(uid => uid !== user.id)
+          : (prev.likes || []).filter(uid => uid !== user.id),
       }));
     } catch { showToast('Failed to like story', 'error'); }
   };
 
   if (loading) return <div className="page"><div className="spinner" /></div>;
-  if (!story) return <div className="page"><div className="container page-content"><p>Story not found.</p></div></div>;
+  if (!story) return (
+    <div className="page">
+      <div className="container page-content">
+        <p style={{ color: 'var(--text-secondary)' }}>{t('storyPage.storyNotFound')}</p>
+      </div>
+    </div>
+  );
 
   const myDeal = deals[0];
   const isWriter = user?.id === story.authorId;
@@ -94,184 +295,232 @@ export default function StoryPage() {
   return (
     <div className="page">
       <div className="container page-content">
-        <button className="btn btn-ghost btn-sm" style={{ marginBottom: 24 }} onClick={() => navigate(-1)}>
-          ← Back
+
+        <button className="btn btn-ghost btn-sm fade-up" style={{ marginBottom: 32 }} onClick={() => navigate(-1)}>
+          ← {t('common.back')}
         </button>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 24 }}>
-          {/* Main content */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-            {/* Story header */}
-            <div className="glass-card" style={{ padding: 32 }}>
-              <div className="flex items-center gap-12 mb-16">
+        <div className="story-page-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 24, alignItems: 'start' }}>
+
+          {/* ── Main ── */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+            {/* Story Header */}
+            <div className="glass-card fade-up" style={{ padding: 36 }}>
+              <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
                 <span className="tag">{story.genre}</span>
                 <span className={`badge badge-${story.status}`}>{story.status}</span>
               </div>
-              <h1 style={{ fontFamily: 'Cinzel, serif', fontSize: 32, marginBottom: 16, lineHeight: 1.2 }}>{story.title}</h1>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 20 }}>
-                {story.tags?.map(t => <span key={t} className="tag">{t}</span>)}
-              </div>
+
+              <h1 style={{
+                fontFamily: 'Poppins, sans-serif',
+                fontSize: 'clamp(26px, 4vw, 40px)',
+                fontWeight: 800, letterSpacing: '-0.03em',
+                lineHeight: 1.1, marginBottom: 20,
+                color: 'var(--text)',
+              }}>
+                {story.title}
+              </h1>
+
+              {story.tags?.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 24 }}>
+                  {story.tags.map(tag => (
+                    <span key={tag} style={{
+                      fontSize: 11, padding: '4px 12px', borderRadius: 50,
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.08)',
+                      color: 'var(--text-secondary)',
+                    }}>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+
               <div className="divider" />
-              <div className="flex items-center justify-between" style={{ marginTop: 16 }}>
-                <div className="flex items-center gap-12">
+
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 20 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                   <div className="avatar">{story.authorName?.charAt(0)}</div>
                   <div>
-                    <div style={{ fontWeight: 500 }}>{story.authorName}</div>
-                    <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>Writer</div>
+                    <div style={{ fontWeight: 600, fontSize: 14 }}>{story.authorName}</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginTop: 2 }}>
+                      {t('deal.writerLabel')}
+                    </div>
                   </div>
                 </div>
-                <button
-                  className={`btn btn-sm ${likedStory ? 'btn-danger' : 'btn-ghost'}`}
-                  onClick={handleLikeStory}
-                  style={{ borderColor: likedStory ? 'var(--accent)' : undefined }}
-                >
-                  {likedStory ? '❤️' : '🤍'} {story.likes?.length || 0} {story.likes?.length === 1 ? 'Like' : 'Likes'}
-                </button>
-              </div>
-            </div>
 
-            {/* Summary */}
-            <div className="glass-card" style={{ padding: 32 }}>
-              <h2 style={{ fontFamily: 'Cinzel, serif', fontSize: 18, marginBottom: 16 }}>Story Summary</h2>
-              <p style={{ lineHeight: 1.8, color: 'var(--text-muted)' }}>{story.summary}</p>
-            </div>
-
-            {/* Full Script (only if deal completed) */}
-            {story.fullScript && (
-              <div className="glass-card" style={{ padding: 32, borderColor: 'rgba(243,156,18,0.3)' }}>
-                <h2 style={{ fontFamily: 'Cinzel, serif', fontSize: 18, marginBottom: 4, color: 'var(--gold)' }}>
-                  🔓 Full Script
-                </h2>
-                <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 16 }}>Unlocked — Deal Completed</p>
-                <pre style={{ whiteSpace: 'pre-wrap', lineHeight: 1.8, fontFamily: 'Inter, sans-serif', fontSize: 14, color: 'var(--text)' }}>
-                  {story.fullScript}
-                </pre>
-              </div>
-            )}
-
-            {/* Chat */}
-            <div className="glass-card" style={{ overflow: 'hidden' }}>
-              <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--glass-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <h2 style={{ fontFamily: 'Cinzel, serif', fontSize: 18 }}>💬 Chat</h2>
-                <button
-                  className={`btn btn-sm ${calling ? 'btn-danger' : 'btn-ghost'}`}
-                  onClick={handleCall}
-                >
-                  {calling ? '📞 Calling...' : '📞 Call'}
-                </button>
-              </div>
-              <div className="chat-box">
-                <div className="chat-messages">
-                  {chat.messages.length === 0 && (
-                    <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: 13, marginTop: 40 }}>
-                      No messages yet. Start the conversation.
-                    </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  {!isWriter && (
+                    <ReportButton
+                      reportedUserId={story.authorId}
+                      reportedUserName={story.authorName}
+                      relatedStoryId={story.id}
+                    />
                   )}
-                  {chat.messages.map(m => (
-                    <div key={m.id} className={`chat-msg ${m.senderId === user?.id ? 'mine' : 'theirs'}`}>
-                      {m.senderId !== user?.id && <div className="msg-sender">{m.senderName}</div>}
-                      {m.text}
-                      <div style={{ fontSize: 10, opacity: 0.6, marginTop: 4, textAlign: 'right' }}>
-                        {new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </div>
-                    </div>
-                  ))}
-                  <div ref={messagesEndRef} />
-                </div>
-                <div className="chat-input-row">
-                  <input
-                    className="input"
-                    placeholder="Type a message..."
-                    value={msg}
-                    onChange={e => setMsg(e.target.value)}
-                    onKeyDown={e => e.key === 'Enter' && handleSend()}
-                    style={{ borderRadius: 50 }}
-                  />
-                  <button className="btn btn-primary btn-sm" onClick={handleSend} style={{ borderRadius: 50, padding: '8px 20px' }}>
-                    Send
+                  <button
+                    className={`like-btn${likePop ? ' liked' : ''}`}
+                    onClick={handleLikeStory}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: 8,
+                      padding: '9px 18px', borderRadius: 50, cursor: 'pointer',
+                      background: likedStory ? 'rgba(248,113,113,0.12)' : 'rgba(255,255,255,0.05)',
+                      border: likedStory ? '1px solid rgba(248,113,113,0.3)' : '1px solid var(--glass-border)',
+                      color: likedStory ? 'var(--danger)' : 'var(--text-secondary)',
+                      fontSize: 13, fontWeight: 500, transition: 'all 0.2s',
+                    }}
+                  >
+                    <span style={{ fontSize: 16 }}>{likedStory ? '❤️' : '🤍'}</span>
+                    {story.likes?.length || 0} {story.likes?.length === 1 ? t('storyPage.like') : t('storyPage.likes')}
                   </button>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Sidebar — Deal */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {myDeal ? (
-              <div className="glass-card" style={{ padding: 24 }}>
-                <h3 style={{ fontFamily: 'Cinzel, serif', fontSize: 16, marginBottom: 16 }}>Deal Status</h3>
-                <div style={{ marginBottom: 16 }}>
-                  <span className={`badge badge-${myDeal.status}`} style={{ fontSize: 13, padding: '6px 16px' }}>
-                    {myDeal.status === 'completed' ? '🎉 Deal Completed — Story Sold' :
-                     myDeal.status === 'cancelled' ? '❌ Deal Cancelled' :
-                     '⏳ Pending'}
-                  </span>
+            {/* Summary */}
+            <div className="glass-card fade-up fade-up-delay-1" style={{ padding: 36 }}>
+              <span className="section-label">{t('story.summary')}</span>
+              <StoryTranslator text={story.summary} label="Summary" />
+            </div>
+
+            {/* Full Script */}
+            {story.fullScript && (
+              <div className="glass-card fade-up fade-up-delay-2" style={{
+                padding: 36,
+                background: 'rgba(79,156,249,0.04)',
+                borderColor: 'rgba(79,156,249,0.2)',
+              }}>
+                <span className="section-label">{t('story.fullScript')}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
+                  <span style={{ fontSize: 12, color: 'var(--accent)' }}>{t('storyPage.unlockedDeal')}</span>
                 </div>
+                <StoryTranslator text={story.fullScript} label="Full Script" />
+              </div>
+            )}
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 20, fontSize: 13 }}>
-                  <div className="flex items-center justify-between">
-                    <span style={{ color: 'var(--text-muted)' }}>Writer confirmed</span>
-                    <span>{myDeal.writerConfirmed ? '✅' : '⏳'}</span>
+            {/* ── Private DM Chat (only when deal exists) ── */}
+            {myDeal && (
+              <div className="glass-card fade-up fade-up-delay-2" style={{ overflow: 'hidden' }}>
+                <div style={{
+                  padding: '18px 24px',
+                  borderBottom: '1px solid var(--glass-border)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  background: 'rgba(79,156,249,0.04)',
+                }}>
+                  <div>
+                    <span className="section-label" style={{ marginBottom: 0 }}>{t('storyPage.privateChat')}</span>
+                    <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>
+                      {otherUser ? `${t('storyPage.with')} ${otherUser.name}` : t('storyPage.dealConversation')}
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span style={{ color: 'var(--text-muted)' }}>Director confirmed</span>
-                    <span>{myDeal.directorConfirmed ? '✅' : '⏳'}</span>
-                  </div>
-                </div>
-
-                {myDeal.status === 'pending' && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                    {isWriter && !myDeal.writerConfirmed && (
-                      <button className="btn btn-success w-full" onClick={() => handleConfirm(myDeal)}>
-                        ✅ Confirm Deal
-                      </button>
-                    )}
-                    {!isWriter && !myDeal.directorConfirmed && (
-                      <button className="btn btn-success w-full" onClick={() => handleConfirm(myDeal)}>
-                        ✅ Confirm Deal
-                      </button>
-                    )}
-                    <button className="btn btn-danger w-full" onClick={() => handleCancel(myDeal)}>
-                      ✕ Cancel Deal
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button
+                      className={`btn btn-sm ${calling ? 'btn-danger' : 'btn-ghost'}`}
+                      onClick={() => {
+                        setCalling(true);
+                        showToast('Calling... (UI demo only)', 'info');
+                        setTimeout(() => setCalling(false), 3000);
+                      }}
+                      style={{ fontSize: 12 }}
+                    >
+                      {calling ? t('storyPage.calling') : t('storyPage.call')}
+                    </button>
+                    <button
+                      className="btn btn-ghost btn-sm"
+                      onClick={() => navigate('/inbox')}
+                      style={{ fontSize: 12 }}
+                    >
+                      {t('storyPage.openInbox')}
                     </button>
                   </div>
-                )}
+                </div>
 
-                {myDeal.status === 'completed' && (
-                  <div style={{ textAlign: 'center', padding: '16px 0', color: 'var(--gold)', fontFamily: 'Cinzel, serif' }}>
-                    🏆 Story Sold!
+                <ChatBox
+                  messages={dmThread?.messages || []}
+                  currentUserId={user.id}
+                  onSend={handleDmSend}
+                  onEdit={handleDmEditMsg}
+                  onDelete={handleDmDeleteMsg}
+                  placeholder={t('messages.typeMessage')}
+                  height={400}
+                />
+              </div>
+            )}
+
+            {/* ── Public Story Chat ── */}
+            <div className="glass-card fade-up fade-up-delay-2" style={{ overflow: 'hidden' }}>
+              <div style={{
+                padding: '18px 24px',
+                borderBottom: '1px solid var(--glass-border)',
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              }}>
+                <div>
+                  <span className="section-label" style={{ marginBottom: 0 }}>{t('storyPage.publicChat')}</span>
+                  <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>
+                    {t('storyPage.openDiscussion')}
                   </div>
-                )}
+                </div>
+              </div>
+
+              <ChatBox
+                messages={storyChat.messages}
+                currentUserId={user.id}
+                onSend={handleStorySend}
+                onEdit={handleStoryEditMsg}
+                onDelete={handleStoryDeleteMsg}
+                placeholder={t('messages.typeMessage')}
+                height={400}
+              />
+            </div>
+          </div>
+
+          {/* ── Sidebar ── */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'sticky', top: 80 }}>
+
+            {/* Deal Card */}
+            {myDeal ? (
+              <div className="glass-card fade-up" style={{ padding: 24 }}>
+                <span className="section-label">{t('deal.deal')}</span>
+                <DealStatusBar
+                  deal={myDeal}
+                  isWriter={isWriter}
+                  onConfirm={() => handleConfirm(myDeal)}
+                  onCancel={() => handleCancel(myDeal)}
+                  t={t}
+                />
+                <div style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                  {isWriter
+                    ? `${t('deal.directorLabel')}: ${myDeal.directorName}`
+                    : `${t('deal.writerLabel')}: ${myDeal.writerName || story.authorName}`}
+                </div>
               </div>
             ) : (
-              <div className="glass-card" style={{ padding: 24, textAlign: 'center' }}>
-                <div style={{ fontSize: 32, marginBottom: 12 }}>🤝</div>
-                <p style={{ color: 'var(--text-muted)', fontSize: 14 }}>
-                  {isWriter ? 'Waiting for a director to express interest.' : 'Click "Interested" from the browse page to start a deal.'}
+              <div className="glass-card fade-up" style={{ padding: 24, textAlign: 'center' }}>
+                <div style={{ fontSize: 28, marginBottom: 12, opacity: 0.5 }}>🤝</div>
+                <p style={{ color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.65 }}>
+                  {isWriter ? t('deal.waitingDirector') : t('deal.clickInterested')}
                 </p>
               </div>
             )}
 
-            {/* Story info card */}
-            <div className="glass-card" style={{ padding: 24 }}>
-              <h3 style={{ fontFamily: 'Cinzel, serif', fontSize: 14, color: 'var(--text-muted)', marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Story Info</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 13 }}>
-                <div className="flex items-center justify-between">
-                  <span style={{ color: 'var(--text-muted)' }}>Genre</span>
-                  <span>{story.genre}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span style={{ color: 'var(--text-muted)' }}>Status</span>
-                  <span className={`badge badge-${story.status}`}>{story.status}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span style={{ color: 'var(--text-muted)' }}>Script</span>
-                  <span>{story.fullScript ? '🔓 Unlocked' : '🔒 Locked'}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span style={{ color: 'var(--text-muted)' }}>Posted</span>
-                  <span>{new Date(story.createdAt).toLocaleDateString()}</span>
-                </div>
+            {/* Story Info */}
+            <div className="glass-card fade-up fade-up-delay-1" style={{ padding: 24 }}>
+              <span className="section-label">{t('storyPage.storyInfo')}</span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {[
+                  { label: t('story.genre'),          val: story.genre },
+                  { label: t('storyPage.status'),     val: <span className={`badge badge-${story.status}`}>{story.status}</span> },
+                  { label: t('storyPage.script'),     val: story.fullScript ? t('storyPage.unlocked') : t('storyPage.locked') },
+                  { label: t('storyPage.posted'),     val: new Date(story.createdAt).toLocaleDateString() },
+                ].map(item => (
+                  <div key={item.label} style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    fontSize: 13,
+                  }}>
+                    <span style={{ color: 'var(--text-muted)' }}>{item.label}</span>
+                    <span style={{ color: 'var(--text-secondary)' }}>{item.val}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
